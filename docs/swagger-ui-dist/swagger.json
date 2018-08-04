@@ -1,0 +1,733 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is documentation for event organisation project. Developed by Profico junior developers.",
+    "version": "1.0.0",
+    "title": "Event Project "
+  },
+  "host": "localhost:5001",
+  "basePath": "/v1",
+  "tags": [
+    {
+      "name": "users"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/users/login": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Login",
+        "description": "Logging user into system.",
+        "operationId": "createUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "user object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token and user informations",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/LoginOutput"
+            }
+          },
+          "203": {
+            "description": "NON_AUTHORITATIVE_INFORMATION",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/FirstLoginOutput"
+            }
+          },
+          "422": {
+            "description": "UNPROCESSABLE_ENTITY",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/LoginWrongInput"
+            }
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Logout",
+        "description": "Logging out user from system",
+        "operationId": "logoutUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "token",
+            "type": "string",
+            "required": true,
+            "description": "Token of the user to logout"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "response after logout",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/LogoutSucces"
+            }
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/users/password-reset": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Password reset",
+        "description": "Service for password reset after first login",
+        "operationId": "passwordReset",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Informations for password reset and fast login",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PasswordResetInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token and user informations",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/LoginOutput"
+            }
+          },
+          "422": {
+            "description": "UNPROCESSABLE_ENTITY",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/LoginWrongInput"
+            }
+          }
+        }
+      }
+    },
+    "/users/birthdays": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Getting birthdays",
+        "description": "Getting next birthdays",
+        "operationId": "GetBirthdays",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of objects",
+            "schema": {
+              "type": "array",
+              "$ref": "#/definitions/GetBirthdaysOutput"
+            }
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Getting next events for dashboard",
+        "operationId": "GetEvents",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of objects",
+            "schema": {
+              "type": "array",
+              "$ref": "#/definitions/GetEventsOutput"
+            }
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Creating event",
+        "operationId": "CreateEvent",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Informations for event",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateEventInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "object",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/CreateEventOutput"
+            }
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags" : ["events"],
+        "summary": "updating event",
+        "operationId": "PutEvent",
+        "produces": ["application/json"],
+        "parameters": [{
+          "in": "body",
+          "name": "body",
+          "schema": {
+            "$ref": "#/definitions/UpdateEventInput"
+          },
+          "required": true
+        }],
+        "responses": {
+          "200": {
+            "description": "updated event",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/GetEventOutput"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/events/{id}": {
+      "get": {
+        "tags": ["events"],
+        "summary": "getting informations about event",
+        "operationId": "GetEvent",
+        "produces": ["application/json"],
+        "parameters": [{
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "$ref": "#/definitions/CreateEventInput"
+          },
+          "required": true
+        }],
+        "responses": {
+          "200": {
+            "description": "object of event informations",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/GetEventOutput"
+            }
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "/events/join": {
+      "post": {
+        "tags": ["events"],
+        "summary": "joining event",
+        "operationId": "joinEvent",
+        "produces": ["application/json"],
+        "parameters": [{
+          "in": "body",
+          "name": "body",
+          "schema": {
+            "$ref": "#/definitions/JoinEventInput"
+          },
+          "required": true
+        }],
+        "responses": {
+          "200": {
+            "description" : "Succesfull"
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Unauthorized"
+            }
+          },
+          "422": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/DeadlineHasExpired"
+            }
+          }
+        }
+      }
+    },
+    "posts": {
+      "post": {
+        "tags": ["posts"],
+        "summary": "Creating post",
+        "operationId": "CreatePost",
+        "produces": ["application/json"],
+        "parameters": [{
+          "in": "body",
+          "name": "body",
+          "schema": {
+            "type": "object",
+            "$ref": "#/definitions/CreatePostInput"
+          },
+          "required": true
+        }],
+        "responses": {
+          "200": {
+            "description": "object of created post",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/CreatedPostOutput"
+            }
+          },
+          "401": {
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Unauthorized"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GetBirthdaysOutput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "firstName" : {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "daysUntilBDay": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string"
+        },
+        "years": {
+          "type": "integer"
+        },
+        "image": {
+          "type": "string"
+        }
+      }
+    },
+    "DeadlineHasExpired": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "error"
+        },
+        "message": {
+          "type": "string",
+          "example": "deadline has expired"
+        }
+      }
+    },
+    "CreatePostInput": {
+      "type": "object",
+      "properties": {
+        "text": {
+            "type": "string"
+        },
+        "eventId": {
+          "type": "integer"
+        }
+      }
+    },
+    "CreatedPostOutput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "createdBy": {
+          "type": "integer"
+        },
+        "text": {
+            "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string"
+        }
+      }
+    },
+    "JoinEventInput": {
+      "type": "object",
+      "properties": {
+        "eventId": {
+          "type": "integer"
+        }
+      }
+    },
+    "CreateEventInput": {
+      "type": "object",
+      "properties": {
+        "birthdayBy": {
+          "type": "integer"
+        },
+        "deadline": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "moneyNeeded": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string"
+        },
+        "birthdayPerson": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateEventOutput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "deadline": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "presentIdea": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "integer"
+        }
+      }
+    },
+    "GetEventOutput": {
+      "type": "object",
+      "properties": {
+        "participants": {
+          "type":"array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "firstName": {
+                "type": "string"
+              },
+              "lastName": {
+                "type": "string"
+              },
+              "image": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "createdBy": {
+          "type": "integer"
+        },
+        "unreadMessages": {
+          "type": "integer"
+        },
+        "wall": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "text": {
+                "type": "string"
+              },
+              "createdBy": {
+                "type": "integer"
+              },
+              "createdAt": {
+                "type": "string"
+              },
+              "updatedAt": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Unauthorized": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "tpye" : "string",
+          "example" : "error"
+        },
+        "message" : {
+          "type": "string",
+          "example": "Unauthorized"
+        }
+      }
+    },
+    "GetEventsOutput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string"
+        },
+        "moneyNeeded": {
+          "type": "integer"
+        },
+        "presentIdea": {
+          "type": "string"
+        },
+        "participants": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type" : "integer"
+              }
+            }
+          }
+        },
+        "persons": {
+          "type": "integer"
+        },
+        "years": {
+          "type": "integer"
+        },
+        "moneyPerPerson": {
+          "type": "integer"
+        },
+        "firstName" : {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string"
+        },
+        "deadline": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "integer"
+        },
+        "birthdayBy": {
+          "type": "integer"
+        },
+        "unreadMessages": {
+          "type": "integer"
+        }     
+      }
+    },
+    "LoginInput": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "roko@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "sifra123"
+        }
+      }
+    },
+    "FirstLoginOutput": {
+      "type": "object",
+      "properties": {
+        "isFirstLogin": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "LoginOutput": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "isFirstLogin": {
+          "type": "boolean",
+          "example": false
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "birthDate": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginWrongInput": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "Error"
+            },
+            "message": {
+              "type": "string",
+              "example": "Wrong user input"
+            }
+          }
+        }
+      }
+    },
+    "LogoutSucces": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Logout"
+        },
+        "message": {
+          "type": "string",
+          "example": "Succesfull logout"
+        }
+      }
+    },
+    "LogoutWrongToken": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "example": "JsonWebTokenError"
+            },
+            "message": {
+              "type": "string",
+              "example": "invalid token"
+            }
+          }
+        }
+      }
+    },
+    "PasswordResetInput": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "roko@gmail.com"
+        },
+        "oldPassword": {
+          "type": "string"
+        },
+        "newPassword": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateEventInput": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        }
+      }
+    }
+  }
+}
