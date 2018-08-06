@@ -6,13 +6,13 @@ class PersonRoutes {
     app
       .route('/person')
       .get(PersonController.getAll)
-      .post(PersonController.createOrUpdate)
-      .put(PersonController.createOrUpdate);
+      .post(PersonController.create)
+      .put(PersonController.update);
 
     app
       .route('/person/:id')
       .get(PersonController.getById)
-      .put(PersonController.createOrUpdate)
+      .put(PersonController.update)
       .delete(PersonController.delete);
   }
 }

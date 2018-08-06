@@ -41,15 +41,26 @@ class PersonController implements IControllers {
     }
   };
 
-  public createOrUpdate = async (req: Request, res: Response): Promise<Response> => {
+  public create = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const AssetRequest: IPersonModel[] = req.body;
-      if (!Array.isArray(AssetRequest) || !AssetRequest) {
-        return res
-          .status(UNPROCESSABLE_ENTITY)
-          .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Wrong data request!'));
+      const PersonRequest: IPersonModel = req.body;
+      this.PersonCollection = await this.PersonService.create(PersonRequest);
+      this.PersonResponse.Person = this.PersonCollection || [];
+      return res.status(OK).json(this.PersonResponse);
+    } catch (error) {
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .json(createError(getStatusText(INTERNAL_SERVER_ERROR), error.message, error));
+    }
+  };
+
+  public update = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const PersonRequest: IPersonModel = req.body;
+      if (req.params.id) {
+        PersonRequest._id = req.params.id;
       }
-      this.PersonCollection = await this.PersonService.createOrUpdate(AssetRequest);
+      this.PersonCollection = await this.PersonService.update(PersonRequest);
       this.PersonResponse.Person = this.PersonCollection || [];
       return res.status(OK).json(this.PersonResponse);
     } catch (error) {

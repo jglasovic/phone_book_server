@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { IPersonModel } from '.';
 
 export interface IPersonResponse {
-  Person: IPersonModel[];
+  Person: IPersonModel[] | IPersonModel;
 }
 
 export interface IDeletedMongoose {
@@ -18,7 +18,8 @@ export interface IUserRequest {
 export interface IControllers {
   getAll(req: Request, res: Response): Promise<Response>;
   getById(req: Request, res: Response): Promise<Response>;
-  createOrUpdate(req: Request, res: Response): Promise<Response>;
+  create(req: Request, res: Response): Promise<Response>;
+  update(req: Request, res: Response): Promise<Response>;
   delete(req: Request, res: Response): Promise<Response>;
 }
 

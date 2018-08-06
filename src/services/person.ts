@@ -12,12 +12,9 @@ class PersonService implements IModelServices<IPersonModel> {
 
   public getOne = (Id: number) => this.PersonModel.ModelType.findOne({ Id }, this.PersonModel.filter);
 
-  public createOrUpdate = (data: IPersonModel[]) => {
-    const QueryArray = data.map((item: IPersonModel) =>
-      this.PersonModel.ModelType.update({ _id: item._id }, item, { upsert: true })
-    );
-    return Promise.all(QueryArray);
-  };
+  public create = (data: IPersonModel) => this.PersonModel.ModelType.create(data);
+
+  public update = (data: IPersonModel) => this.PersonModel.ModelType.update({ _id: data._id }, data);
 
   public delete = (Id: number) => this.PersonModel.ModelType.deleteOne({ _id: Id });
 }
