@@ -1,14 +1,16 @@
-import * as express from 'express';
-import User from './user';
-import AssetRouter from './assets';
+import { Router, Application } from 'express';
+import UserRoutes from './user';
+import PersonRoutes from './person';
 
 class Routes {
-  private AssetRouter: AssetRouter = new AssetRouter();
-  private User: User = new User();
+  private RouterV1: Router = Router();
+  private PresonRoutes: PersonRoutes = new PersonRoutes();
+  private UserRoutes: UserRoutes = new UserRoutes();
 
-  public initRoutes(app: express.Application): void {
-    this.User.initRoutes(app);
-    this.AssetRouter.initRoutes(app);
+  public initRoutes(app: Application | Router): void {
+    app.use('/api/v1/', this.RouterV1);
+    this.UserRoutes.initRoutes(app);
+    this.PresonRoutes.initRoutes(this.RouterV1);
   }
 }
 

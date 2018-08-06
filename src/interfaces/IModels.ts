@@ -6,7 +6,7 @@ export interface IModelClass<T extends Document> {
   filter: string;
 }
 
-export interface IUser {
+export interface IPerson {
   Firstname: string;
   Lastname: string;
   Address: string;
@@ -24,7 +24,7 @@ export interface IPhoneType {
   Name: string;
 }
 
-export interface IUserModel extends IUser, Document {}
+export interface IPersonModel extends IPerson, Document {}
 
 export interface INumberModel extends INumber, Document {}
 

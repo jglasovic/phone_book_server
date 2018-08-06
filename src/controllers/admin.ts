@@ -1,4 +1,4 @@
-import { createError } from './../utils/error_log';
+import { createError } from '../utils/error_log';
 import { Request, Response } from 'express';
 import { IUserRequest } from '../interfaces';
 import TokenGenerator from '../utils/token_generator';

@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { IAssetModel } from '.';
+import { IPersonModel } from '.';
 
-export interface IAssetsResponse {
-  Assets: IAssetModel[] | [IAssetModel];
+export interface IPersonResponse {
+  Person: IPersonModel[];
 }
 
 export interface IDeletedMongoose {

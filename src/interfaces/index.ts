@@ -1,4 +1,3 @@
 export * from './IModels';
-export * from './IRepostories';
+export * from './IModelServices';
 export * from './IControllers';
-// export * from './IRoures';

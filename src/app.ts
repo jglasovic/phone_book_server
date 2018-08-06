@@ -4,7 +4,7 @@ import * as cors from 'cors';
 import { absolutePath } from '../docs/swagger-ui-dist';
 import Authentication from './middlewares/authentication';
 import Routes from './routes';
-import DbClient from './services/dbClient';
+import DbClient from './utils/dbClient';
 
 class App {
   private app: express.Application = express();

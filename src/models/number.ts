@@ -8,13 +8,10 @@ class NumberModel implements IModelClass<INumberModel> {
   constructor() {
     this.ModelSchema = new Schema({
       Number: String,
-      _user: { type: Schema.Types.ObjectId, ref: 'User' },
-      type: {
-        id: {
-          type: Schema.Types.ObjectId,
-          ref: 'Phone_type',
-        },
-        Name: String,
+      PersonId: { type: Schema.Types.ObjectId, ref: 'Person' },
+      Type: {
+        type: Schema.Types.ObjectId,
+        ref: 'Phone_type',
       },
     });
     this.ModelType = model<INumberModel>('Number', this.ModelSchema);

@@ -11,9 +11,4 @@ module.exports = {
   options: {
     expiresIn: process.env.SECRET_KEY_EXP,
   },
-  api: {
-    url1: '',
-    url2: '',
-    url3: '', // define endpoints
-  },
 };

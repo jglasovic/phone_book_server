@@ -1,10 +1,10 @@
 import { Application, Router } from 'express';
-import UserControler from '../controllers/user';
+import AdminControler from '../controllers/admin';
 
-class UserRouter {
+class AdminRouter {
   public initRoutes(app: Application | Router): void {
-    app.route('/login').post(UserControler.loginUser);
+    app.route('/login').post(AdminControler.login);
   }
 }
 
-export default UserRouter;
+export default AdminRouter;

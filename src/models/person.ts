@@ -1,8 +1,8 @@
-import { Schema, Model, model, SchemaType } from 'mongoose';
-import { IUserModel, IModelClass } from '../interfaces';
+import { Schema, Model, model } from 'mongoose';
+import { IPersonModel, IModelClass } from '../interfaces';
 
-class UserModel implements IModelClass<IUserModel> {
-  public ModelType: Model<IUserModel>;
+class UserModel implements IModelClass<IPersonModel> {
+  public ModelType: Model<IPersonModel>;
   public ModelSchema: Schema;
   public filter: string = '-__v'; // filter auto-import mongoBD __v
   constructor() {
@@ -14,17 +14,14 @@ class UserModel implements IModelClass<IUserModel> {
       Country: String,
       Lat: Number,
       Lng: Number,
-      Default: {
-        _number: { type: Schema.Types.ObjectId, ref: 'Number', unique: true, required: true },
-        Number: String,
-      },
+      Default: { type: Schema.Types.ObjectId, ref: 'Number' },
       Numbers: [
         {
-          id: {
+          Id: {
             type: Schema.Types.ObjectId,
             ref: 'Number',
           },
-          type: {
+          PhoneType: {
             id: {
               type: Schema.Types.ObjectId,
               ref: 'Phone_type',
@@ -35,7 +32,7 @@ class UserModel implements IModelClass<IUserModel> {
         },
       ],
     });
-    this.ModelType = model<IUserModel>('User', this.ModelSchema);
+    this.ModelType = model<IPersonModel>('Person', this.ModelSchema);
   }
 }
 
