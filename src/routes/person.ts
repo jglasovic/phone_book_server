@@ -6,14 +6,11 @@ class PersonRoutes {
     app
       .route('/person')
       .get(PersonController.getAll)
-      .post(PersonController.create)
-      .put(PersonController.update);
+      .post(PersonController.create);
 
-    app
-      .route('/person/:id')
-      .get(PersonController.getById)
-      .put(PersonController.update)
-      .delete(PersonController.delete);
+    app.route('/person/:id').get(PersonController.getById);
+    // .put(PersonController.update)
+    // .delete(PersonController.delete);
   }
 }
 

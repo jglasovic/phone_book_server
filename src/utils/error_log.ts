@@ -1,6 +1,7 @@
 import { IError } from '../interfaces';
 import * as winston from 'winston';
 import 'winston-log-and-exit';
+import extend from './promisify_callback';
 
 const logger = new winston.Logger({
   transports: [new winston.transports.File({ filename: '../../error_logs/error.log' })],

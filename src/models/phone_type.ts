@@ -1,16 +1,15 @@
 import { Schema, Model, model } from 'mongoose';
 import { IPhoneTypeModel, IModelClass } from '../interfaces';
 
-class PhoneTypeModel implements IModelClass<IPhoneTypeModel> {
-  public ModelType: Model<IPhoneTypeModel>;
-  public ModelSchema: Schema;
-  public filter: string = '-__v'; // filter auto-import mongoBD __v
-  constructor() {
-    this.ModelSchema = new Schema({
-      Name: String,
-    });
-    this.ModelType = model<IPhoneTypeModel>('Phone_type', this.ModelSchema);
-  }
+class PhoneTypeModel {
+  public static filter: string = '-__v'; // filter auto-import mongoBD __v
+  public static readonly ModelSchema: Schema = new Schema({
+    Name: String,
+  });
+  public static readonly ModelType: Model<IPhoneTypeModel> = model<IPhoneTypeModel>(
+    'Phone_type',
+    PhoneTypeModel.ModelSchema
+  );
 }
 
 export default PhoneTypeModel;

@@ -1,22 +1,17 @@
-import { IDeletedMongoose, IControllers, IPersonModel, IPersonResponse } from '../interfaces';
+import { IDeletedMongoose, IControllers, IPersonModel, IPersonUpdateRequest } from '../interfaces';
 import { OK, INTERNAL_SERVER_ERROR, UNPROCESSABLE_ENTITY, getStatusText } from 'http-status-codes';
 import { createError } from '../utils/error_log';
 import { Request, Response } from 'express';
-
 import PersonService from '../services/person';
+import { validatePersonRequest } from '../utils/req_vertification';
 
-class PersonController implements IControllers {
+class PersonController {
   private PersonService: PersonService = new PersonService();
-  private PersonCollection?: IPersonModel | IPersonModel[] | null;
-  private PersonResponse: IPersonResponse = {
-    Person: [],
-  };
 
   public getAll = async (req: Request, res: Response): Promise<Response> => {
     try {
-      this.PersonCollection = await this.PersonService.getAll();
-      this.PersonResponse.Person = this.PersonCollection;
-      return res.status(OK).json(this.PersonResponse);
+      const PersonCollection = await this.PersonService.getAll();
+      return res.status(OK).json(PersonCollection);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -31,9 +26,8 @@ class PersonController implements IControllers {
           .status(UNPROCESSABLE_ENTITY)
           .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Param Id undefined!'));
       }
-      this.PersonCollection = await this.PersonService.getOne(req.params.id);
-      this.PersonResponse.Person = this.PersonCollection ? [this.PersonCollection] : [];
-      return res.status(OK).json(this.PersonResponse);
+      const PersonCollection = await this.PersonService.getOne(req.params.id);
+      return res.status(OK).json(PersonCollection);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -44,9 +38,13 @@ class PersonController implements IControllers {
   public create = async (req: Request, res: Response): Promise<Response> => {
     try {
       const PersonRequest: IPersonModel = req.body;
-      this.PersonCollection = await this.PersonService.create(PersonRequest);
-      this.PersonResponse.Person = this.PersonCollection || [];
-      return res.status(OK).json(this.PersonResponse);
+      if (!validatePersonRequest(PersonRequest)) {
+        return res
+          .status(UNPROCESSABLE_ENTITY)
+          .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Invalid request!'));
+      }
+      const PersonCollection = await this.PersonService.create(PersonRequest);
+      return res.status(OK).json(PersonCollection);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -56,13 +54,15 @@ class PersonController implements IControllers {
 
   public update = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const PersonRequest: IPersonModel = req.body;
-      if (req.params.id) {
-        PersonRequest._id = req.params.id;
+      const PersonRequest: IPersonUpdateRequest = req.body;
+      if (!req.params.id) {
+        return res
+          .status(UNPROCESSABLE_ENTITY)
+          .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Param Id undefined!'));
       }
-      this.PersonCollection = await this.PersonService.update(PersonRequest);
-      this.PersonResponse.Person = this.PersonCollection || [];
-      return res.status(OK).json(this.PersonResponse);
+      PersonRequest._id = req.params.id;
+      const PersonCollection = await this.PersonService.update(PersonRequest);
+      return res.status(OK).json(PersonCollection);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -77,13 +77,8 @@ class PersonController implements IControllers {
           .status(UNPROCESSABLE_ENTITY)
           .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Param Id undefined!'));
       }
-      const deletedRes: IDeletedMongoose = await this.PersonService.delete(req.params.id);
-      if (deletedRes.n !== 1 || deletedRes.ok !== 1) {
-        return res
-          .status(UNPROCESSABLE_ENTITY)
-          .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Wrong data request!'));
-      }
-      return res.status(OK).json({ message: 'Deleted!', Id: req.params.id });
+      const deletedRes = await this.PersonService.delete(req.params.id);
+      return res.status(OK).json(deletedRes);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)

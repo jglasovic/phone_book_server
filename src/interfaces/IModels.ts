@@ -16,16 +16,26 @@ export interface IPerson {
   Lng: number;
 }
 
-export interface INumber {
-  Number: string;
-}
-
 export interface IPhoneType {
   Name: string;
 }
 
-export interface IPersonModel extends IPerson, Document {}
+export interface INumber {
+  Number: string;
+}
 
-export interface INumberModel extends INumber, Document {}
+export interface IPersonForModel extends IPerson {
+  Default: string;
+  Numbers: INumberForModel[];
+}
+
+export interface INumberForModel extends INumber {
+  _type: string;
+  _person: string;
+}
+
+export interface IPersonModel extends IPersonForModel, Document {}
+
+export interface INumberModel extends INumberForModel, Document {}
 
 export interface IPhoneTypeModel extends IPhoneType, Document {}
