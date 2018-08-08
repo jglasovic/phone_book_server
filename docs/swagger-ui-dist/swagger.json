@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "This is documentation for event organisation project. Developed by Profico junior developers.",
+    "description": "This is documentation for REST Api phone book server. Developed by jglasovic.",
     "version": "1.0.0",
-    "title": "Event Project "
+    "title": "Phone_book_server"
   },
-  "host": "localhost:5001",
-  "basePath": "/v1",
+  "host": "localhost:4001",
+  "basePath": "/",
   "tags": [
     {
       "name": "users"
@@ -16,14 +16,13 @@
     "http"
   ],
   "paths": {
-    "/users/login": {
+    "/login": {
       "post": {
         "tags": [
-          "users"
+          "Admin"
         ],
         "summary": "Login",
-        "description": "Logging user into system.",
-        "operationId": "createUser",
+        "description": "Logging admin into system.",
         "produces": [
           "application/json"
         ],
@@ -31,7 +30,7 @@
           {
             "in": "body",
             "name": "body",
-            "description": "user object",
+            "description": "admin object",
             "required": true,
             "schema": {
               "$ref": "#/definitions/LoginInput"
@@ -40,91 +39,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Token and user informations",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/LoginOutput"
-            }
-          },
-          "203": {
-            "description": "NON_AUTHORITATIVE_INFORMATION",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/FirstLoginOutput"
-            }
-          },
-          "422": {
-            "description": "UNPROCESSABLE_ENTITY",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/LoginWrongInput"
-            }
-          }
-        }
-      }
-    },
-    "/users/logout": {
-      "post": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Logout",
-        "description": "Logging out user from system",
-        "operationId": "logoutUser",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "header",
-            "name": "token",
-            "type": "string",
-            "required": true,
-            "description": "Token of the user to logout"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "response after logout",
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/LogoutSucces"
-            }
-          },
-          "401": {
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/Unauthorized"
-            }
-          }
-        }
-      }
-    },
-    "/users/password-reset": {
-      "post": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Password reset",
-        "description": "Service for password reset after first login",
-        "operationId": "passwordReset",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "Informations for password reset and fast login",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/PasswordResetInput"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Token and user informations",
+            "description": "Token and exp informations",
             "schema": {
               "type": "object",
               "$ref": "#/definitions/LoginOutput"
@@ -134,40 +49,13 @@
             "description": "UNPROCESSABLE_ENTITY",
             "schema": {
               "type": "object",
-              "$ref": "#/definitions/LoginWrongInput"
+              "$ref": "#/definitions/WrongAdminDataInput"
             }
           }
         }
       }
     },
-    "/users/birthdays": {
-      "get": {
-        "tags": [
-          "users"
-        ],
-        "summary": "Getting birthdays",
-        "description": "Getting next birthdays",
-        "operationId": "GetBirthdays",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "Array of objects",
-            "schema": {
-              "type": "array",
-              "$ref": "#/definitions/GetBirthdaysOutput"
-            }
-          },
-          "401": {
-            "schema": {
-              "type": "object",
-              "$ref": "#/definitions/Unauthorized"
-            }
-          }
-        }
-      }
-    },
+    
     "/events": {
       "get": {
         "tags": [

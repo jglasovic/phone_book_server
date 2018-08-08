@@ -3,8 +3,8 @@ import { sign, verify } from 'jsonwebtoken';
 import { IConfig } from './interfaces';
 
 class TokenGenerator {
-  public static generate = (data: any): Promise<string | object> => {
-    return new Promise((res, rej) => {
+  public static readonly generate = (data: any): Promise<string | object> =>
+    new Promise((res, rej) => {
       sign(
         {
           data,
@@ -19,10 +19,9 @@ class TokenGenerator {
         }
       );
     });
-  };
-  public static decode(data: string): string | object {
-    return verify(data, TokenGenerator.config.secretKey);
-  }
+
+  public static readonly decode = (data: string): string | object => verify(data, TokenGenerator.config.secretKey);
+
   private static config: IConfig = cf.util.toObject();
 }
 

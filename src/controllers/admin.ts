@@ -1,4 +1,4 @@
-import { createError } from '../utils/error_log';
+import { createErrorResponse } from '../utils/error_log';
 import { Request, Response } from 'express';
 import { IUserRequest } from '../interfaces';
 import TokenGenerator from '../utils/token_generator';
@@ -6,37 +6,37 @@ import { getStatusText, UNPROCESSABLE_ENTITY, INTERNAL_SERVER_ERROR, OK } from '
 
 class Admin {
   private superUser: IUserRequest = {
-    username: 'admin',
-    password: 'test1234',
+    Username: 'admin',
+    Password: 'test1234',
   };
 
   public login = async (req: Request, res: Response) => {
     try {
       const user: IUserRequest = {
-        username: req.body.username,
-        password: req.body.password,
+        Username: req.body.username,
+        Password: req.body.password,
       };
-      if (!user.username) {
+      if (!user.Username) {
         return res
           .status(UNPROCESSABLE_ENTITY)
-          .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Username field missing!'));
+          .json(createErrorResponse(getStatusText(UNPROCESSABLE_ENTITY), 'Username field missing!'));
       }
-      if (!user.password) {
+      if (!user.Password) {
         return res
           .status(UNPROCESSABLE_ENTITY)
-          .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Password field missing!'));
+          .json(createErrorResponse(getStatusText(UNPROCESSABLE_ENTITY), 'Password field missing!'));
       }
-      if (user.username !== this.superUser.username || user.password !== this.superUser.password) {
+      if (user.Username !== this.superUser.Username || user.Password !== this.superUser.Password) {
         return res
           .status(UNPROCESSABLE_ENTITY)
-          .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Wrong user authentication input!'));
+          .json(createErrorResponse(getStatusText(UNPROCESSABLE_ENTITY), 'Wrong user authentication input!'));
       }
-      const token = await TokenGenerator.generate(user.password);
+      const token = await TokenGenerator.generate(user.Password);
       return res.status(OK).json(token);
     } catch (err) {
       return res
         .status(INTERNAL_SERVER_ERROR)
-        .json(createError(getStatusText(INTERNAL_SERVER_ERROR), err.message, err));
+        .json(createErrorResponse(getStatusText(INTERNAL_SERVER_ERROR), err.message, err));
     }
   };
 }

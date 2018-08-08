@@ -12,9 +12,8 @@ class PersonService {
           model: 'Phone_type',
           select: '-__v',
         },
-        select: '-__v',
+        select: '-__v -_person',
       })
-      .populate('Default')
       .exec();
 
   public getOne = (_id: string) =>

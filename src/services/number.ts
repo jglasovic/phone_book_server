@@ -44,8 +44,8 @@ class NumberService {
         if (data.Default) {
           doc.Default = createNumber._id; // if Default set _id
         }
-        const updatePerson = await PersonModel.ModelType.update({ _id: createNumber._person }, doc).exec(); // update Person
-        res(updatePerson);
+        await PersonModel.ModelType.update({ _id: createNumber._person }, doc).exec(); // update Person
+        res(createNumber);
       } catch (err) {
         rej(err);
       }
