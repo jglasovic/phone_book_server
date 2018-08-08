@@ -1,4 +1,4 @@
-import { IDeletedMongoose, IControllers, INumberModel, INumberResponse } from '../interfaces';
+import { INumberCreateRequest, INumberUpdateRequest } from '../interfaces';
 import { OK, INTERNAL_SERVER_ERROR, UNPROCESSABLE_ENTITY, getStatusText } from 'http-status-codes';
 import { createError } from '../utils/error_log';
 import { Request, Response } from 'express';
@@ -10,12 +10,13 @@ class NumberController {
   public findNumber = async (req: Request, res: Response) => {
     try {
       if (!req.query.Number) {
+        // query Number for async number search
         return res
           .status(UNPROCESSABLE_ENTITY)
           .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Param Id undefined!'));
       }
-      const PersonCollection = await this.NumberService.findByNumber(req.query.Number); // get number with person data
-      return res.status(OK).json(PersonCollection);
+      const NumberCollection = await this.NumberService.findByNumber(req.query.Number); // get number with person data
+      return res.status(OK).json(NumberCollection);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -25,9 +26,9 @@ class NumberController {
 
   public create = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const PersonRequest: INumberModel = req.body;
-      const PersonCollection = await this.NumberService.create(PersonRequest);
-      return res.status(OK).json(PersonCollection);
+      const NumberRequest: INumberCreateRequest = req.body;
+      const NumberCollection = await this.NumberService.create(NumberRequest);
+      return res.status(OK).json(NumberCollection);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -37,12 +38,12 @@ class NumberController {
 
   public update = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const PersonRequest: INumberModel = req.body;
+      const NumberRequest: INumberUpdateRequest = req.body;
       if (req.params.id) {
-        PersonRequest._id = req.params.id;
+        NumberRequest._id = req.params.id;
       }
-      const PersonCollection = await this.NumberService.update(PersonRequest);
-      return res.status(OK).json(PersonCollection);
+      const NumberCollection = await this.NumberService.update(NumberRequest);
+      return res.status(OK).json(NumberCollection);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -57,13 +58,8 @@ class NumberController {
           .status(UNPROCESSABLE_ENTITY)
           .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Param Id undefined!'));
       }
-      const deletedRes: IDeletedMongoose = await this.NumberService.delete(req.params.id);
-      if (deletedRes.n !== 1 || deletedRes.ok !== 1) {
-        return res
-          .status(UNPROCESSABLE_ENTITY)
-          .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Wrong data request!'));
-      }
-      return res.status(OK).json({ message: 'Deleted!', Id: req.params.id });
+      const deletedRes = await this.NumberService.delete(req.params.id);
+      return res.status(OK).json(deletedRes);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)

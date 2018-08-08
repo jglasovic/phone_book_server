@@ -1,4 +1,4 @@
-import { IModelServices, INumberModel, INumberCreateRequest, INumberUpdateRequest } from '../interfaces';
+import { IModelServices, INumberModel, INumberCreateRequest, INumberUpdateRequest, IPersonModel } from '../interfaces';
 import NumberModel from '../models/number';
 import PersonModel from '../models/person';
 
@@ -44,9 +44,37 @@ class NumberService {
       }
     });
 
-  public update = (data: INumberUpdateRequest) => NumberModel.ModelType.update({ _id: data._id }, data);
+  public update = (data: INumberUpdateRequest) => NumberModel.ModelType.update({ _id: data._id }, data).exec();
 
-  public delete = (_id: number) => NumberModel.ModelType.deleteOne({ _id });
+  public delete = (_id: number) =>
+    new Promise(async (res, rej) => {
+      try {
+        const deletedNumber = (await NumberModel.ModelType.findOneAndRemove({ _id }).exec()) as INumberModel;
+        if (!deletedNumber) {
+          rej({ message: 'Database Error' });
+        }
+        let Person = (await PersonModel.ModelType.findOne({ _id: deletedNumber._person })) as IPersonModel;
+        if (Person.Numbers.length === 1) {
+          Person = (await PersonModel.ModelType.findOneAndRemove({
+            _id: deletedNumber._person,
+          }).exec()) as IPersonModel;
+          res({
+            message: 'Delete person last number and delete person!',
+            data: { person: Person, number: deletedNumber },
+          });
+        }
+        const doc: { [k: string]: any } = {
+          $pull: { Numbers: deletedNumber._id }, // options for Person, pull _id from Numbers
+        };
+        if (Person.Default === deletedNumber._id) {
+          doc.Default = Person.Numbers[0] === deletedNumber._id ? Person.Numbers[1] : Person.Numbers[0];
+        }
+        await PersonModel.ModelType.update({ _id: Person._id }, doc);
+        res({ message: 'Deleted number', Number: deletedNumber });
+      } catch (err) {
+        rej(err);
+      }
+    });
 }
 
 export default NumberService;
