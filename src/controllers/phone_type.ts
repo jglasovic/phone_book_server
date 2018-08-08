@@ -10,8 +10,8 @@ class PhoneTypeController {
 
   public getAll = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const PersonCollection = await this.PhoneTypeService.getAll();
-      return res.status(OK).json(PersonCollection);
+      const PhoneTypeCollection = await this.PhoneTypeService.getAll();
+      return res.status(OK).json(PhoneTypeCollection);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -21,9 +21,9 @@ class PhoneTypeController {
 
   public create = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const PersonRequest: IPhoneTypeModel = req.body;
-      const PersonCollection = await this.PhoneTypeService.create(PersonRequest);
-      return res.status(OK).json(PersonCollection);
+      const PhoneTypeRequest: IPhoneTypeModel = req.body;
+      const PhoneTypeCollection = await this.PhoneTypeService.create(PhoneTypeRequest);
+      return res.status(OK).json(PhoneTypeCollection);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -33,13 +33,12 @@ class PhoneTypeController {
 
   public update = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const PersonRequest: IPhoneTypeModel = req.body;
+      const PhoneTypeRequest: IPhoneTypeModel = req.body;
       if (req.params.id) {
-        PersonRequest._id = req.params.id;
+        PhoneTypeRequest._id = req.params.id;
       }
-      const PersonCollection = await this.PhoneTypeService.update(PersonRequest);
-      // this.PersonResponse.Person = this.PersonCollection || [];
-      return res.status(OK).json(PersonCollection);
+      const PhoneTypeCollection = await this.PhoneTypeService.update(PhoneTypeRequest);
+      return res.status(OK).json(PhoneTypeCollection);
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -60,7 +59,7 @@ class PhoneTypeController {
           .status(UNPROCESSABLE_ENTITY)
           .json(createError(getStatusText(UNPROCESSABLE_ENTITY), 'Wrong data request!'));
       }
-      return res.status(OK).json({ message: 'Deleted!', Id: req.params.id });
+      return res.status(OK).json({ message: 'Deleted!', _iPhoneTypeCollectiond: req.params.id });
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)

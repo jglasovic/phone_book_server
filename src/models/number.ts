@@ -7,7 +7,7 @@ class NumberModel {
     Number: String,
     _person: { type: Schema.Types.ObjectId, ref: 'Person' },
     _type: { type: Schema.Types.ObjectId, ref: 'Phone_type' },
-  }).index({ Number: 'text' });
+  }).index({ Number: 'text' }); // set for search Numbers
   public static readonly ModelType: Model<INumberModel> = model<INumberModel>('Number', NumberModel.ModelSchema);
 }
 

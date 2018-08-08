@@ -1,4 +1,11 @@
-import { IModelServices, INumberModel, INumberCreateRequest, INumberUpdateRequest, IPersonModel } from '../interfaces';
+import {
+  IModelServices,
+  INumberModel,
+  INumberCreateRequest,
+  INumberUpdateRequest,
+  IPersonModel,
+  IError,
+} from '../interfaces';
 import NumberModel from '../models/number';
 import PersonModel from '../models/person';
 
@@ -49,28 +56,35 @@ class NumberService {
   public delete = (_id: number) =>
     new Promise(async (res, rej) => {
       try {
-        const deletedNumber = (await NumberModel.ModelType.findOneAndRemove({ _id }).exec()) as INumberModel;
+        const deletedNumber = (await NumberModel.ModelType.findOneAndRemove({ _id }).exec()) as INumberModel; // delete number and get deleted data
         if (!deletedNumber) {
-          rej({ message: 'Database Error' });
+          // check delete
+          const err: IError = {
+            Error: 'Delete failure!',
+            message: 'Unknown _id',
+            data: { _id },
+          };
+          rej(err);
         }
-        let Person = (await PersonModel.ModelType.findOne({ _id: deletedNumber._person })) as IPersonModel;
+        let Person = (await PersonModel.ModelType.findOne({ _id: deletedNumber._person })) as IPersonModel; // find person of deleted number to update
         if (Person.Numbers.length === 1) {
           Person = (await PersonModel.ModelType.findOneAndRemove({
+            // if it was his last number, then delete person
             _id: deletedNumber._person,
           }).exec()) as IPersonModel;
           res({
             message: 'Delete person last number and delete person!',
-            data: { person: Person, number: deletedNumber },
+            data: { _person: Person._id, _id: deletedNumber._id },
           });
         }
         const doc: { [k: string]: any } = {
           $pull: { Numbers: deletedNumber._id }, // options for Person, pull _id from Numbers
         };
         if (Person.Default === deletedNumber._id) {
-          doc.Default = Person.Numbers[0] === deletedNumber._id ? Person.Numbers[1] : Person.Numbers[0];
+          doc.Default = Person.Numbers[0] === deletedNumber._id ? Person.Numbers[1] : Person.Numbers[0]; // options if it was default number with first or second
         }
-        await PersonModel.ModelType.update({ _id: Person._id }, doc);
-        res({ message: 'Deleted number', Number: deletedNumber });
+        await PersonModel.ModelType.update({ _id: Person._id }, doc).exec(); // update Person
+        res({ message: 'Deleted number', _id: deletedNumber._id });
       } catch (err) {
         rej(err);
       }

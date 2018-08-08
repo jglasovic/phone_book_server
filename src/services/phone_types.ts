@@ -1,14 +1,12 @@
 import { IModelServices, IPhoneTypeModel } from '../interfaces';
 import PhoneTypesModel from '../models/phone_type';
 
-class PhoneTypesService implements IModelServices<IPhoneTypeModel> {
+class PhoneTypesService {
   public getAll = () =>
     PhoneTypesModel.ModelType.find(
       {},
       PhoneTypesModel.filter // filter auto-import mongoBD _id and __v
     );
-
-  public getOne = (_id: number) => PhoneTypesModel.ModelType.findOne({ _id }, PhoneTypesModel.filter);
 
   public create = (data: IPhoneTypeModel) => PhoneTypesModel.ModelType.create(data);
 

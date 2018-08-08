@@ -8,9 +8,11 @@ class PersonRoutes {
       .get(PersonController.getAll)
       .post(PersonController.create);
 
-    app.route('/person/:id').get(PersonController.getById);
-    // .put(PersonController.update)
-    // .delete(PersonController.delete);
+    app
+      .route('/person/:id')
+      .get(PersonController.getById)
+      .put(PersonController.update)
+      .delete(PersonController.delete);
   }
 }
 

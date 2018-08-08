@@ -9,7 +9,6 @@ class NumberRoutes {
       .post(NumberController.create);
     app
       .route('/number/:id')
-      // .get(NumberController.getAll)
       .put(NumberController.update)
       .delete(NumberController.delete);
   }

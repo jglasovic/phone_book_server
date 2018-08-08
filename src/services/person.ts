@@ -1,4 +1,4 @@
-import { IPersonCreateRequest, IDeletedMongoose, IPersonUpdateRequest } from '../interfaces';
+import { IPersonCreateRequest, IDeletedMongoose, IPersonUpdateRequest, IError } from '../interfaces';
 import PersonModel from '../models/person';
 import NumberModel from '../models/number';
 
@@ -51,13 +51,23 @@ class PersonService {
       try {
         const deletedNumbers: IDeletedMongoose = await NumberModel.ModelType.deleteMany({ _person: _id }).exec(); // delete all person numbers
         if (deletedNumbers.n === 0 || deletedNumbers.ok === 0) {
-          rej({ message: 'Database error!' });
+          const err: IError = {
+            Error: 'Delete failure!',
+            message: 'Delete Numbers error, Unknown person _id!',
+            data: { _id },
+          };
+          rej(err);
         }
         const deletedPerson: IDeletedMongoose = await PersonModel.ModelType.deleteOne({ _id }).exec(); // delete person
         if (deletedPerson.n !== 1 || deletedPerson.ok !== 1) {
-          rej({ message: 'Database error!' });
+          const err: IError = {
+            Error: 'Delete failure!',
+            message: 'Delete Person error, Unknown person _id!',
+            data: { _id },
+          };
+          rej(err);
         }
-        res({ message: 'Deleted!', Id: _id });
+        res({ message: 'Deleted!', _id });
       } catch (err) {
         rej(err);
       }
