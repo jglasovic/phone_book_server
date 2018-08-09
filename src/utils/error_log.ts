@@ -3,7 +3,7 @@ import * as winston from 'winston';
 import 'winston-log-and-exit';
 
 const logger = new winston.Logger({
-  transports: [new winston.transports.File({ filename: '../../error_logs/error.log' })],
+  transports: [new winston.transports.File({ filename: __dirname + '/../../error_logs/error.log' })],
 }) as any;
 
 export default function(err: any): void {
