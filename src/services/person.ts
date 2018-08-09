@@ -1,4 +1,11 @@
-import { IPersonCreateRequest, IDeletedMongoose, IPersonUpdateRequest, IError } from '../interfaces';
+import {
+  IPersonCreateRequest,
+  IDeletedMongoose,
+  IPersonUpdateRequest,
+  IError,
+  IPersonModel,
+  INumberModel,
+} from '../interfaces';
 import PersonModel from '../models/person';
 import NumberModel from '../models/number';
 
@@ -10,9 +17,8 @@ class PersonService {
         populate: {
           path: '_type',
           model: 'Phone_type',
-          select: '-__v',
         },
-        select: '-__v -_person',
+        select: '-_person',
       })
       .exec();
 
@@ -23,29 +29,37 @@ class PersonService {
         populate: {
           path: '_type',
           model: 'Phone_type',
-          select: '-__v',
         },
-        select: '-__v',
       })
       .exec();
 
-  public create = (data: IPersonCreateRequest) =>
+  public create = (data: IPersonCreateRequest): Promise<IPersonModel> =>
     new Promise(async (res, rej) => {
       try {
-        const Numbers = await NumberModel.ModelType.create(data.Numbers); // create all numbers and get _ids
+        const Numbers: INumberModel[] = await NumberModel.ModelType.create(data.Numbers); // create all numbers and get _ids
         data.Default = Numbers[0]._id; // set first as default
         data.Numbers.forEach((num, i) => (num.Default ? (data.Default = Numbers[i]._id) : null)); // check if user set default ad rewrite first
         data.Numbers = Numbers.map(num => num._id); // map all number _ids for Person schema
-        const Person = await PersonModel.ModelType.create(data); // create Person
+        const Person: IPersonModel = await PersonModel.ModelType.create(data); // create Person
         res(Person);
       } catch (err) {
         rej(err);
       }
     });
 
-  public update = (data: IPersonUpdateRequest) => PersonModel.ModelType.update({ _id: data._id }, data).exec(); // update person
+  public update = (data: IPersonUpdateRequest) =>
+    PersonModel.ModelType.findByIdAndUpdate(data._id, data, { new: true })
+      .populate({
+        path: 'Numbers',
+        populate: {
+          path: '_type',
+          model: 'Phone_type',
+        },
+        select: '-_person',
+      })
+      .exec(); // update person
 
-  public delete = (_id: string) =>
+  public delete = (_id: string): Promise<{ message: string; _id: string }> =>
     new Promise(async (res, rej) => {
       try {
         const deletedNumbers: IDeletedMongoose = await NumberModel.ModelType.deleteMany({ _person: _id }).exec(); // delete all person numbers

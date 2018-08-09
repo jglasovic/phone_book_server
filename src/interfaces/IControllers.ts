@@ -1,13 +1,4 @@
-import { Request, Response } from 'express';
 import { IPerson, INumber, INumberForModel, IPhoneType } from '.';
-
-export interface IControllers {
-  getAll(req: Request, res: Response): Promise<Response>;
-  getById(req: Request, res: Response): Promise<Response>;
-  create(req: Request, res: Response): Promise<Response>;
-  update(req: Request, res: Response): Promise<Response>;
-  delete(req: Request, res: Response): Promise<Response>;
-}
 
 // response
 export interface IPersonResponse extends IPerson {

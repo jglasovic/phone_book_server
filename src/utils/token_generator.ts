@@ -1,6 +1,6 @@
 import * as cf from 'config';
 import { sign, verify } from 'jsonwebtoken';
-import { IConfig } from './interfaces';
+import { IConfig } from './I_config';
 
 class TokenGenerator {
   public static readonly generate = (data: any): Promise<string | object> =>

@@ -1,8 +1,9 @@
-import { createErrorResponse } from '../utils/error_log';
 import { Request, Response } from 'express';
 import { IUserRequest } from '../interfaces';
-import TokenGenerator from '../utils/token_generator';
 import { getStatusText, UNPROCESSABLE_ENTITY, INTERNAL_SERVER_ERROR, OK } from 'http-status-codes';
+import { createErrorResponse } from '../utils/error_log';
+
+import TokenGenerator from '../utils/token_generator';
 
 class Admin {
   private superUser: IUserRequest = {
@@ -31,7 +32,7 @@ class Admin {
           .status(UNPROCESSABLE_ENTITY)
           .json(createErrorResponse(getStatusText(UNPROCESSABLE_ENTITY), 'Wrong user authentication input!'));
       }
-      const token = await TokenGenerator.generate(user.Password);
+      const token: string | object = await TokenGenerator.generate(user.Password);
       return res.status(OK).json(token);
     } catch (err) {
       return res
