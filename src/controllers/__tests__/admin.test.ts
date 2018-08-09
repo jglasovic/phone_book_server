@@ -9,15 +9,13 @@ chai.use(chaiHttp);
 const Server = new App().config();
 const { expect, request } = chai;
 
-describe('Admin controller', async () => {
-  describe('Admin login', () => {
-    it('should return token', async () => {
-      const response = await request(Server)
-        .post('/login')
-        .send({ username: 'admin', password: 'test1234' });
-      expect(response).to.have.status(200);
-      expect(response).to.be.json;
-      expect(response.body['Token']).to.be.string;
-    });
+describe('Admin login', () => {
+  it('should return token', async () => {
+    const response = await request(Server)
+      .post('/login')
+      .send({ username: 'admin', password: 'test1234' });
+    expect(response).to.have.status(200);
+    expect(response).to.be.json;
+    expect(response.body['Token']).to.be.string;
   });
 });
