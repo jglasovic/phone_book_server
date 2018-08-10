@@ -3,26 +3,23 @@ import NumberModel from '../models/number';
 import PersonModel from '../models/person';
 
 class NumberService {
-  public getAll = (_person: string): Promise<INumberModel[]> =>
-    NumberModel.ModelType.find(
-      { _person },
-      NumberModel.filter // filter auto-import mongoBD _id and __v
-    )
+  public getAll = (person: string): Promise<INumberModel[]> =>
+    NumberModel.ModelType.find({ person })
       .populate({
-        path: '_type',
+        path: 'type',
         model: 'Phone_type',
       })
       .exec();
 
   public findByNumber = (Num: string): Promise<INumberModel[]> =>
-    NumberModel.ModelType.find({ Number: { $regex: `.*${Num}.*` } }, NumberModel.filter) // search Number and populate with person data and phone type
+    NumberModel.ModelType.find({ number: { $regex: `.*${Num}.*` } }) // search Number and populate with person data and phone type
       .populate({
-        path: '_person',
+        path: 'person',
         model: 'Person',
-        select: '-Numbers',
+        select: '-numbers',
       })
       .populate({
-        path: '_type',
+        path: 'type',
         model: 'Phone_type',
       })
       .exec();
@@ -30,29 +27,50 @@ class NumberService {
   public create = (data: INumberCreateRequest): Promise<INumberModel> =>
     new Promise(async (res, rej) => {
       try {
-        const createNumber = await NumberModel.ModelType.create(data, { select: '-__v' }); // create new number
+        const createNumber = await NumberModel.ModelType.create(data); // create new number
         const doc: { [k: string]: any } = {
-          $push: { Numbers: createNumber._id }, // options for Person, push _id to Numbers
+          $push: { numbers: createNumber._id }, // options for Person, push _id to Numbers
         };
-        if (data.Default) {
-          doc.Default = createNumber._id; // if Default set _id
+        if (data.def) {
+          doc.def = createNumber._id; // if Default set _id
         }
-        await PersonModel.ModelType.update({ _id: createNumber._person }, doc).exec(); // update Person
+        await PersonModel.ModelType.update({ _id: createNumber.person }, doc).exec(); // update Person
         res(createNumber);
       } catch (err) {
         rej(err);
       }
     });
 
-  public update = (data: INumberUpdateRequest) =>
-    NumberModel.ModelType.findByIdAndUpdate(data._id, data, { new: true })
-      .populate({
-        path: '_type',
-        model: 'Phone_type',
-      })
-      .exec();
+  public update = (data: INumberUpdateRequest): Promise<INumberModel> =>
+    new Promise(async (res, rej) => {
+      try {
+        const { def, ...rest } = data;
+        const updatedNumber = (await NumberModel.ModelType.findByIdAndUpdate(rest._id, rest, {
+          new: true,
+        })
+          .populate({
+            path: 'type',
+            model: 'Phone_type',
+          })
+          .exec()) as INumberModel;
+        if (!updatedNumber) {
+          const err: IError = {
+            Error: 'Update failure!',
+            message: 'Unknown _id',
+            data: { _id: rest._id },
+          };
+          rej(err);
+        }
+        if (def) {
+          await PersonModel.ModelType.findByIdAndUpdate(rest.person, { def: rest._id }).exec();
+        }
+        res(updatedNumber);
+      } catch (err) {
+        rej(err);
+      }
+    });
 
-  public delete = (_id: number): Promise<{ message: string; data?: { _person: string; _id: string }; _id?: string }> =>
+  public delete = (_id: number): Promise<{ message: string; data?: { person: string; _id: string }; _id?: string }> =>
     new Promise(async (res, rej) => {
       try {
         const deletedNumber = (await NumberModel.ModelType.findOneAndRemove({ _id }).exec()) as INumberModel; // delete number and get deleted data
@@ -65,22 +83,22 @@ class NumberService {
           };
           rej(err);
         }
-        let Person = (await PersonModel.ModelType.findOne({ _id: deletedNumber._person })) as IPersonModel; // find person of deleted number to update
-        if (Person.Numbers.length === 1) {
+        let Person = (await PersonModel.ModelType.findOne({ _id: deletedNumber.person })) as IPersonModel; // find person of deleted number to update
+        if (Person.numbers.length === 1) {
           Person = (await PersonModel.ModelType.findOneAndRemove({
-            // if it was his last number, then delete person
-            _id: deletedNumber._person,
+            // if last number, delete person
+            _id: deletedNumber.person,
           }).exec()) as IPersonModel;
           res({
             message: 'Delete person last number and delete person!',
-            data: { _person: Person._id, _id: deletedNumber._id },
+            data: { person: Person._id, _id: deletedNumber._id },
           });
         }
         const doc: { [k: string]: any } = {
           $pull: { Numbers: deletedNumber._id }, // options for Person, pull _id from Numbers
         };
-        if (Person.Default === deletedNumber._id) {
-          doc.Default = Person.Numbers[0] === deletedNumber._id ? Person.Numbers[1] : Person.Numbers[0]; // options if it was default number with first or second
+        if (Person.def === deletedNumber._id) {
+          doc.Default = Person.numbers[0] === deletedNumber._id ? Person.numbers[1] : Person.numbers[0]; // default number: first or second
         }
         await PersonModel.ModelType.update({ _id: Person._id }, doc).exec(); // update Person
         res({ message: 'Deleted number', _id: deletedNumber._id });

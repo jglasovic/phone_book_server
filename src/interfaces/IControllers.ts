@@ -2,8 +2,8 @@ import { IPerson, INumber, INumberForModel, IPhoneType } from '.';
 
 // response
 export interface IPersonResponse extends IPerson {
-  Default: string;
-  Numbers: INumberPersonResponse[];
+  def: string;
+  numbers: INumberPersonResponse[];
 }
 
 export interface IPhoneTypeRequestResponse extends IPhoneType {
@@ -15,29 +15,29 @@ interface INumberPersonResponse extends INumber {
 }
 export interface INumberResponse extends INumber {
   _id: string;
-  _person: string;
-  _type: IPhoneTypeRequestResponse;
+  person: string;
+  type: IPhoneTypeRequestResponse;
 }
 
 // request
 export interface IUserRequest {
-  Username?: string;
-  Password?: string;
+  username?: string;
+  password?: string;
 }
 
 export interface IPersonUpdateRequest extends IPerson {
   _id: string;
-  Default?: string;
+  def?: string;
 }
 export interface IPersonCreateRequest extends IPersonUpdateRequest {
-  Numbers: INumberCreateRequest[];
+  numbers: INumberCreateRequest[];
 }
 
 export interface INumberUpdateRequest extends INumberCreateRequest {
   _id: string;
 }
 export interface INumberCreateRequest extends INumberForModel {
-  Default?: boolean;
+  def?: boolean;
 }
 
 // mongoose delete response

@@ -5,15 +5,15 @@ class PersonModel {
   public static filter: string = '-__v'; // filter auto-import mongoBD __v
   public static readonly ModelSchema: Schema = new Schema(
     {
-      Firstname: String,
-      Lastname: String,
-      Address: String,
-      City: String,
-      Country: String,
-      Lat: Number,
-      Lng: Number,
-      Default: { type: Schema.Types.ObjectId, ref: 'Number' },
-      Numbers: [
+      firstname: String,
+      lastname: String,
+      address: String,
+      city: String,
+      country: String,
+      lat: Number,
+      lng: Number,
+      def: { type: Schema.Types.ObjectId, ref: 'Number' },
+      numbers: [
         {
           type: Schema.Types.ObjectId,
           ref: 'Number',

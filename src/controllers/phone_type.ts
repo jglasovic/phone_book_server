@@ -74,7 +74,7 @@ class PhoneTypeController {
           .status(UNPROCESSABLE_ENTITY)
           .json(createErrorResponse(getStatusText(UNPROCESSABLE_ENTITY), 'Wrong data request!'));
       }
-      return res.status(OK).json({ message: 'Deleted!', _iPhoneTypeCollectiond: req.params.id });
+      return res.status(OK).json({ message: 'Deleted!', _id: req.params.id });
     } catch (error) {
       return res
         .status(INTERNAL_SERVER_ERROR)

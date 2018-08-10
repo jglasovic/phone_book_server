@@ -5,7 +5,7 @@ class PhoneTypeModel {
   public static filter: string = '-__v'; // filter auto-import mongoBD __v
   public static readonly ModelSchema: Schema = new Schema(
     {
-      Name: String,
+      name: String,
     },
     { versionKey: false }
   );

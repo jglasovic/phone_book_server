@@ -1,5 +1,6 @@
 // run-time check
 
+// define property and types
 const Person = [
   { key: 'Firstname', type: 'string' },
   { key: 'Lastname', type: 'string' },

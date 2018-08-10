@@ -7,32 +7,32 @@ import TokenGenerator from '../utils/token_generator';
 
 class Admin {
   private superUser: IUserRequest = {
-    Username: 'admin',
-    Password: 'test1234',
+    username: 'admin',
+    password: 'test1234',
   };
 
   public login = async (req: Request, res: Response) => {
     try {
       const user: IUserRequest = {
-        Username: req.body.username,
-        Password: req.body.password,
+        username: req.body.username,
+        password: req.body.password,
       };
-      if (!user.Username) {
+      if (!user.username) {
         return res
           .status(UNPROCESSABLE_ENTITY)
           .json(createErrorResponse(getStatusText(UNPROCESSABLE_ENTITY), 'Username field missing!'));
       }
-      if (!user.Password) {
+      if (!user.password) {
         return res
           .status(UNPROCESSABLE_ENTITY)
           .json(createErrorResponse(getStatusText(UNPROCESSABLE_ENTITY), 'Password field missing!'));
       }
-      if (user.Username !== this.superUser.Username || user.Password !== this.superUser.Password) {
+      if (user.username !== this.superUser.username || user.password !== this.superUser.password) {
         return res
           .status(UNPROCESSABLE_ENTITY)
           .json(createErrorResponse(getStatusText(UNPROCESSABLE_ENTITY), 'Wrong user authentication input!'));
       }
-      const token: string | object = await TokenGenerator.generate(user.Password);
+      const token: string | object = await TokenGenerator.generate(user.password);
       return res.status(OK).json(token);
     } catch (err) {
       return res

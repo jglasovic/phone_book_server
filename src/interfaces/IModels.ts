@@ -7,31 +7,31 @@ export interface IModelClass<T extends Document> {
 }
 
 export interface IPerson {
-  Firstname: string;
-  Lastname: string;
-  Address: string;
-  City: string;
-  Country: string;
-  Lat: number;
-  Lng: number;
+  firstname: string;
+  lastname: string;
+  address: string;
+  city: string;
+  country: string;
+  lat: number;
+  lng: number;
 }
 
 export interface IPhoneType {
-  Name: string;
+  name: string;
 }
 
 export interface INumber {
-  Number: string;
+  number: string;
 }
 
 export interface IPersonForModel extends IPerson {
-  Default: string;
-  Numbers: INumberForModel[];
+  def: string;
+  numbers: INumberForModel[];
 }
 
 export interface INumberForModel extends INumber {
-  _type: string;
-  _person: string;
+  type: string;
+  person: string;
 }
 
 export interface IPersonModel extends IPersonForModel, Document {}
