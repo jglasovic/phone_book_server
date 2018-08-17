@@ -13,21 +13,11 @@ Make sure you have [Node.js](http://nodejs.org/) and the MongoDB installed.
 
 Create .env file from example.env and edit it with your data.
 
-Then create directory for mongoDB:
-
-```sh
-mkdir data
-cd data
-mkdir db
-```
 
 ## Start MongoDB
 
-For start mongoDB run command:
+Please make sure mongoDB is running!
 
-```sh
-npm run mongoDB
-```
 
 ## Start Server
 
