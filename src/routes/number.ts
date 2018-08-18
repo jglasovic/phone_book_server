@@ -2,7 +2,7 @@ import { Router, Application } from 'express';
 import NumberController from '../controllers/number';
 
 class NumberRoutes {
-  public initRoutes(app: Router | Application): void {
+  public privateRoutes(app: Router | Application): void {
     app
       .route('/number')
       .get(NumberController.findNumber)
@@ -11,6 +11,9 @@ class NumberRoutes {
       .route('/number/:id')
       .put(NumberController.update)
       .delete(NumberController.delete);
+  }
+  public publicRoutes(app: Router | Application): void {
+    app.route('/number').get(NumberController.findNumber);
   }
 }
 

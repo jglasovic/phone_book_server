@@ -12,11 +12,15 @@ class Routes {
   private PhoneTypeRoutes: PhoneTypeRoutes = new PhoneTypeRoutes();
 
   public initRoutes(app: Application | Router): void {
-    app.use('/api/v1/', this.RouterV1);
     this.UserRoutes.initRoutes(app);
-    this.PresonRoutes.initRoutes(this.RouterV1);
-    this.NumberRoutes.initRoutes(this.RouterV1);
-    this.PhoneTypeRoutes.initRoutes(this.RouterV1);
+    this.PresonRoutes.publicRoutes(app);
+    this.NumberRoutes.publicRoutes(app);
+    this.PhoneTypeRoutes.publicRoutes(app);
+
+    app.use('/api/v1/', this.RouterV1);
+    this.PresonRoutes.privateRoutes(this.RouterV1);
+    this.NumberRoutes.privateRoutes(this.RouterV1);
+    this.PhoneTypeRoutes.privateRoutes(this.RouterV1);
   }
 }
 

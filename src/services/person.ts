@@ -18,8 +18,9 @@ class PersonService {
           path: 'type',
           model: 'Phone_type',
         },
-        select: '-person',
+        model: 'Number',
       })
+      .sort([['lastname', 1]])
       .exec();
 
   public getOne = (_id: string) =>
